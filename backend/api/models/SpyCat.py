@@ -39,3 +39,4 @@ class SpyCatSerializer(serializers.ModelSerializer):
 
         return super().create(validated_data)
 
+
