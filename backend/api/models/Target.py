@@ -1,12 +1,16 @@
 from django.db import models
 from rest_framework import serializers, exceptions
 
+from ..models import Mission
+
 
 class Target(models.Model):
     name = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
     notes = models.TextField(default="", blank=True)
     is_complete = models.BooleanField(default=False)
+
+    mission = models.ForeignKey(Mission, on_delete=models.CASCADE)
 
 
 

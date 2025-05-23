@@ -1,6 +1,6 @@
 from django.db import models
 from rest_framework import serializers, exceptions
-from . import breeds
+from . import breeds, Mission
 
 
 class SpyCat(models.Model):
@@ -8,6 +8,8 @@ class SpyCat(models.Model):
     experience = models.PositiveIntegerField()
     salary = models.FloatField()
     breed = models.JSONField()
+
+    mission = models.ForeignKey(Mission, on_delete=models.SET_NULL, default=None, null=True)
 
 
 

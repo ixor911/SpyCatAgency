@@ -8,6 +8,7 @@ router = DefaultRouter()
 routes = [
     ("spy_cat", views.SpyCatView),
     ("target", views.TargetView),
+    ("mission", views.MissionView),
 ]
 
 
