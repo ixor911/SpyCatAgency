@@ -65,12 +65,19 @@ class MissionView(viewsets.ModelViewSet):
         )
 
 
+    def update(self, request, *args, **kwargs):
+        return Response(
+            exceptions.MethodNotAllowed("Mission can not be updated this way").detail,
+            status=exceptions.status.HTTP_403_FORBIDDEN
+        )
+
+
     def destroy(self, request, *args, **kwargs):
         mission = get_object_or_404(Mission, id=kwargs.get('pk'))
 
         if mission.cat:
             return Response(
-                    exceptions.PermissionDenied("Mission is already given to the cat").detail,
+                exceptions.PermissionDenied("Mission is already given to the cat").detail,
                 status=exceptions.status.HTTP_403_FORBIDDEN
             )
         
