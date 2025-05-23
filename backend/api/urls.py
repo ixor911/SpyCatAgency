@@ -7,6 +7,7 @@ from . import views
 router = DefaultRouter()
 routes = [
     ("spy_cat", views.SpyCatView),
+    ("target", views.TargetView),
 ]
 
 
