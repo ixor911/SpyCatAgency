@@ -1,4 +1,5 @@
 from rest_framework import viewsets, exceptions
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from ..models import SpyCat, SpyCatSerializer, breeds
@@ -10,7 +11,7 @@ class SpyCatView(viewsets.ModelViewSet):
 
 
     def update(self, request, *args, **kwargs):
-        cat = SpyCat.objects.get(id=kwargs.get('pk'))
+        cat = get_object_or_404(id=kwargs.get('pk'))
         cat_serializer = SpyCatSerializer(
             instance=cat,
             data={
