@@ -20,6 +20,8 @@ class TargetSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
+        """ Target can not be changed when it or the mission is already completed """
+
         if instance.is_complete:
             raise exceptions.PermissionDenied("Target is completed, you can not change it")
         elif instance.mission.is_completed:

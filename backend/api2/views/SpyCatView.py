@@ -11,6 +11,12 @@ class SpyCatView(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["put"])
     def mission(self, request, pk):
+        """
+        Assign current SpyCat to the Mission
+
+        You should have 'mission' field with id in request body
+        """
+
         cat = generics.get_object_or_404(SpyCat, id=pk)
         mission = generics.get_object_or_404(Mission, id=request.data.get('mission'))
 
@@ -21,12 +27,16 @@ class SpyCatView(viewsets.ModelViewSet):
 
     @mission.mapping.get
     def get_mission(self, request, pk):
+        """ Get Mission of current Cat or None """
+
         cat = generics.get_object_or_404(SpyCat, id=pk)
 
         return response.Response() if not cat.mission else response.Response(MissionSerializer(cat.mission).data)
 
     @mission.mapping.delete
     def delete_mission(self, request, pk):
+        """ Delete Mission from current SpyCat """
+
         cat = generics.get_object_or_404(SpyCat, id=pk)
         cat.mission = None
         cat.save()

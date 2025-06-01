@@ -10,6 +10,15 @@ class TargetView(viewsets.ModelViewSet):
     serializer_class = TargetSerializer
 
     def check(self, request, target):
+        """
+        Just a checkup function to separate one function into 2
+
+        Error is given:
+        - Mission is completed,
+        - Mission without SpyCat
+        - "notes" field in request body is empty
+        """
+
         if target.mission.is_completed:
             return response.Response(
                 "Mission is already completed",
@@ -34,6 +43,8 @@ class TargetView(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["put"])
     def add_note(self, request, pk):
+        """ Add note to the target with some conditions from top """
+
         target = generics.get_object_or_404(Target, id=pk)
 
         check_res = self.check(request, target)
@@ -53,6 +64,8 @@ class TargetView(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["put"])
     def complete(self, request, pk):
+        """ Mark Target as completed """
+
         target = generics.get_object_or_404(Target, id=pk)
         target.is_complete = True
         target.save()
@@ -61,5 +74,7 @@ class TargetView(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def mission(self, request, pk):
+        """ Get Mission data from current Target """
+
         target = generics.get_object_or_404(Target, id=pk)
         return response.Response(MissionSerializer(target.mission).data)

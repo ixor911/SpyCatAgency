@@ -9,6 +9,8 @@ class MissionView(viewsets.ModelViewSet):
     serializer_class = MissionSerializer
 
     def destroy(self, request, *args, **kwargs):
+        """ Mission can not be deleted when the SpyCat is assigned """
+
         mission = generics.get_object_or_404(Mission, id=kwargs.get('pk'))
 
         if mission.cat:
@@ -24,6 +26,12 @@ class MissionView(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["put"])
     def cat(self, request, pk):
+        """
+        Assign SpyCat to the Mission, If the Cat is free or raise error
+
+        You should have 'cat' field with id in request body
+        """
+
         mission = generics.get_object_or_404(Mission, id=pk)
         cat = generics.get_object_or_404(SpyCat, id=request.data.get('cat'))
 
@@ -47,6 +55,8 @@ class MissionView(viewsets.ModelViewSet):
 
     @cat.mapping.delete
     def delete_cat(self, request, pk):
+        """ Delete SpyCat from mission """
+
         mission = generics.get_object_or_404(Mission, id=pk)
 
         if mission.cat:
@@ -58,6 +68,8 @@ class MissionView(viewsets.ModelViewSet):
 
     @cat.mapping.get
     def get_cat(self, request, pk):
+        """ Get SpyCat data of current mission """
+
         mission = generics.get_object_or_404(Mission, id=pk)
 
         resp = response.Response() if not mission.cat else response.Response(SpyCatSerializer(mission.cat).data)
@@ -65,11 +77,15 @@ class MissionView(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def targets(self, request, pk):
+        """ Get the Targets data of current mission """
+
         mission = generics.get_object_or_404(Mission, id=pk)
         return response.Response(TargetSerializer(mission.targets, many=True).data)
 
     @action(detail=True, methods=["put"])
     def complete(self, request, pk):
+        """ Mark mission as complete """
+
         mission = generics.get_object_or_404(Mission, id=pk)
         mission.is_completed = True
         mission.save()

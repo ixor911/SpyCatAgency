@@ -20,6 +20,12 @@ class SpyCatSerializer(serializers.ModelSerializer):
 
 
     def get_breed(self, breed):
+        """
+        Try to find the breed by id or the instance, otherwise raise error
+
+        :param breed:
+        :return: breed
+        """
         check_data = breeds.values() if isinstance(breed, dict) else breeds.keys()
 
         if breed not in check_data:
@@ -29,12 +35,16 @@ class SpyCatSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
+        """ Validate breed while creating"""
+
         return super().create({
             **validated_data,
             "breed": self.get_breed(validated_data.get('breed'))
         })
 
     def update(self, instance, validated_data):
+        """ Validate breed while updating"""
+
         return super().update(instance, {
             **validated_data,
             "breed": self.get_breed(validated_data.get('breed'))

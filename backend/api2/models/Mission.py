@@ -7,6 +7,11 @@ class Mission(models.Model):
 
     @property
     def cat(self):
+        """
+        A way to make some sort of connection Mission -> SpyCat
+
+        :return: SpyCat or None
+        """
         from . import SpyCat
 
         cats = SpyCat.objects.filter(mission=self.id)
@@ -15,6 +20,11 @@ class Mission(models.Model):
 
     @property
     def targets(self):
+        """
+        A way to make some sort of connection Mission -> Target
+
+        :return: List[Target]
+        """
         from . import Target
 
         targets = Target.objects.filter(mission=self.id)
@@ -29,6 +39,12 @@ class MissionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def to_representation(self, instance):
+        """
+        With mission get info about cat and targets
+
+        :param instance:
+        :return: dict
+        """
         from . import SpyCatSerializer, TargetSerializer
 
         return {
@@ -38,6 +54,14 @@ class MissionSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        """
+        While creating Mission, create Targets.
+        BUT if at least one target is bad, mission will not be created
+        It can be changed easily
+
+        :param validated_data:
+        :return: Mission
+        """
         from . import TargetSerializer
 
         targets_data = validated_data.pop('targets')
@@ -52,6 +76,7 @@ class MissionSerializer(serializers.ModelSerializer):
             if target_serializer.is_valid():
                 target_serializer.save()
             else:
+                # Commit next line, if you want mission to be created anyway
                 mission.delete()
                 raise exceptions.ParseError(target_serializer.errors)
 
